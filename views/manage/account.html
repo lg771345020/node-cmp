@@ -1,0 +1,305 @@
+<div id="content" class="col-sm-10">
+    <!-- content starts -->
+    <div>
+        <ul class="breadcrumb">
+            <li>
+                <a href="javascript:void(0);">集中监管平台</a>
+            </li>
+            <li>
+                <a href="javascript:void(0);">配置管理</a>
+            </li>
+            <li>
+                <a href="javascript:void(0);">帐号管理</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="box-inner homepage-box">
+        <div class="box-content">
+            <div class="box-content row">
+                <a class="btn" href="javascript:void(0);" onclick="show_account_add();">
+                    <i class="glyphicon glyphicon-plus"></i>
+                    <span>添加</span>
+                </a>
+            </div>
+
+            <div class="row">
+                <div class="box-content">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>用户名</th>
+                            <th>密码</th>
+                            <th>邮箱</th>
+                            <th>微信</th>
+                            <th>电话</th>
+                            <th>告警通知方式</th>
+                            <th>告警级别</th>
+                            <th>所属城市</th>
+                            <th>状态</th>
+                            <th>用户级别</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="tbody_account">
+                        #foreach(${user} in ${users})
+                        <tr>
+                            <td>${velocityCount}
+                                <input  type="hidden" id="input_des_${velocityCount}" value="${user.des}">
+                            </td>
+                            <td id="td_name_${velocityCount}" title="">${user.name}</td>
+                            <td id="td_password_${velocityCount}" title="">******
+                                <input  type="hidden" id="input_password_${velocityCount}" value="${user.password}">
+                            </td>
+                            <td id="td_email_${velocityCount}" title="">${user.email}</td>
+                            <td id="td_wechat_${velocityCount}" title="">${user.wechat}</td>
+                            <td id="td_tel_${velocityCount}" title="">${user.tel}</td>
+                            <td id="td_warn_type_${velocityCount}" title="">${tool.warnType2char(${user.warn_type})}
+                                <input  type="hidden" id="input_warn_type_${velocityCount}" value="${user.warn_type}"></td>
+                            <td id="td_warn_level_${velocityCount}" title="">${tool.warnLevel2char(${user.warn_level})}
+                                <input  type="hidden" id="input_warn_level_${velocityCount}" value="${user.warn_level}"></td>
+                            <td id="td_city_${velocityCount}" title="">${user.city}</td>
+                            <td id="td_state_${velocityCount}" title="">
+                                #if(${user.state} == 1)
+                                在线
+                                #else
+                                离线
+                                #end
+                                <input  type="hidden" id="input_state_${velocityCount}" value="${user.state}"></td>
+                            <td id="td_type_${velocityCount}" title="">
+                                #if(${user.type} == 1)
+                                管理员
+                                #else
+                                普通用户
+                                #end
+                                <input  type="hidden" id="input_type_${velocityCount}" value="${user.type}"></td>
+                            <td>
+                                <a class="btn" href="javascript:void(0);" onclick="show_account_edit(${velocityCount});">编辑</a>
+                                <a class="btn" href="javascript:void(0);" onclick="account_del('${user.name}');">删除</a></td>
+                        </tr>
+                        #end
+                        </tbody>
+                    </table>
+                    <div id='paginator_account' class="pagination pagination-centered"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--添加帐号-->
+<div class="modal fade" id="modal_account_add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4>添加帐号</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">用户名:</label>
+                        <div class="col-md-7">
+                            <input type="text" class="form-control" id="add_name" oninput="check_add_name();">
+                            <div style="color:red" id="add_name_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">用户类型:</label>
+                        <div class="col-md-7 radio"  onclick="check_add_type();">
+                            <label><input type="radio" name="add_type[]" value="1">管理员</label>
+                            <label><input type="radio" name="add_type[]" value="0">普通用户</label>
+                            <div style="color:red" id="add_type_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">密码:</label>
+                        <div class="col-md-7">
+                            <input type="text" class="form-control" id="add_password" oninput="check_add_password();">
+                            <div style="color:red" id="add_password_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">确认密码:</label>
+                        <div class="col-md-7">
+                            <input type="text" class="form-control" id="add_repassword" oninput="check_add_repassword();">
+                            <div style="color:red" id="add_repassword_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">告警通知方式:</label>
+                        <div class="col-md-7 radio">
+                            <label><input type="radio" name="add_warn_type[]" value="1">电话</label>
+                            <label><input type="radio" name="add_warn_type[]" value="2">邮件</label>
+                            <label><input type="radio" name="add_warn_type[]" value="3">微信</label>
+                            <label><input type="radio" name="add_warn_type[]" value="0">不通知</label>
+                            <div style="color:red" id="add_warn_type_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">告警等级:</label>
+                        <div class="col-md-7 checkbox">
+                            <label><input type="checkbox" name="add_warn_level[]" value="4">低</label>
+                            <label><input type="checkbox" name="add_warn_level[]" value="2">中</label>
+                            <label><input type="checkbox" name="add_warn_level[]" value="1">高</label>
+                            <div style="color:red" id="add_warn_level_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">邮箱:</label>
+                        <div class="col-md-7">
+                            <input type="text" class="form-control" id="add_email" oninput="check_add_email();">
+                            <div style="color:red" id="add_email_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">电话:</label>
+                        <div class="col-md-7">
+                            <input type="text" class="form-control" id="add_tel" oninput="check_add_tel();">
+                            <div style="color:red" id="add_tel_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">微信:</label>
+                        <div class="col-md-7">
+                            <input type="text" class="form-control" id="add_wechat">
+                            <div style="color:red" id="add_wechat_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm" id="add_city_group">
+                        <label class="col-md-3 control-label">区域权限:</label>
+                        <div class="col-md-7">
+                            <select class="form-control" id="add_city">
+                                #foreach(${city} in ${citylist})
+                                <option value="${city.name}">${city.name}</option>
+                                #end
+                            </select>
+                            <div style="color:red" id="add_city_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">描述:</label>
+                        <div class="col-md-7">
+                            <textarea id="add_des" class="form-control" style="height: auto;" rows="2"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" data-dismiss="modal"><span id="addcancel">取消</span></button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="add_account();" id="modal_add_submit">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--编辑帐号-->
+<div class="modal fade" id="modal_account_edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4>编辑帐号</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">用户名:</label>
+                        <div class="col-md-7">
+                            <input type="text" class="form-control" id="edit_name">
+                            <div style="color:red" id="edit_name_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">用户类型:</label>
+                        <div class="col-md-7 radio" onclick="check_edit_type();">
+                            <label><input type="radio" name="edit_type[]" value="1">管理员</label>
+                            <label><input type="radio" name="edit_type[]" value="0">普通用户</label>
+                            <div style="color:red" id="edit_type_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">密码:</label>
+                        <div class="col-md-7">
+                            <input type="text" class="form-control" id="edit_password" oninput="check_edit_password()">
+                            <div style="color:red" id="edit_password_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">确认密码:</label>
+                        <div class="col-md-7">
+                            <input type="text" class="form-control" id="edit_repassword"  oninput="check_edit_repassword()">
+                            <div style="color:red" id="edit_repassword_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">告警通知方式:</label>
+                        <div class="col-md-7 radio">
+                            <label><input type="radio" name="edit_warn_type[]" value="1">短信</label>
+                            <label><input type="radio" name="edit_warn_type[]" value="2">邮件</label>
+                            <label><input type="radio" name="edit_warn_type[]" value="3">微信</label>
+                            <label><input type="radio" name="edit_warn_type[]" value="0">不通知</label>
+                            <div style="color:red" id="edit_warn_type_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">告警等级:</label>
+                        <div class="col-md-7 checkbox">
+                            <label><input type="checkbox" name="edit_warn_level[]" value="4">低</label>
+                            <label><input type="checkbox" name="edit_warn_level[]" value="2">中</label>
+                            <label><input type="checkbox" name="edit_warn_level[]" value="1">高</label>
+                            <div style="color:red" id="edit_warn_level_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">邮箱:</label>
+                        <div class="col-md-7">
+                            <input type="text" class="form-control" id="edit_email"  oninput="check_edit_email()">
+                            <div style="color:red" id="edit_email_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">电话:</label>
+                        <div class="col-md-7">
+                            <input type="text" class="form-control" id="edit_tel" oninput="check_edit_tel()">
+                            <div style="color:red" id="edit_tel_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">微信:</label>
+                        <div class="col-md-7">
+                            <input type="text" class="form-control" id="edit_wechat">
+                            <div style="color:red" id="edit_wechat_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm" id="edit_city_group">
+                        <label class="col-md-3 control-label">区域权限:</label>
+                        <div class="col-md-7">
+                            <select class="form-control" id="edit_city">
+                                #foreach(${city} in ${citylist})
+                                <option value="${city.name}">${city.name}</option>
+                                #end
+                            </select>
+                            <div style="color:red" id="edit_city_warning"></div>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <label class="col-md-3 control-label">描述:</label>
+                        <div class="col-md-7">
+                            <textarea id="edit_des" class="form-control" style="height: auto;" rows="2"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="edit_account();">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var cnt_account = ${cnt}
+</script>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>${title}</title>
+    <meta charset="UTF-8">
+    <link href="/public/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!--<link href="/public/css/bootstrap-cerulean.min.css" rel="stylesheet">-->
+    <link href="/public/css/charisma-app.css" rel="stylesheet" />
+    <link href="/public/lib/chosen/chosen.min.css" rel='stylesheet' />
+    <link href="/public/lib/colorbox/colorbox.css" rel='stylesheet' />
+    <link href="/public/lib/responsive-tables/responsive-tables.css" rel='stylesheet' />
+    <link href="/public/css/jquery.noty.css" rel='stylesheet' />
+    <link href="/public/css/noty_theme_default.css" rel='stylesheet' />
+    <link href="/public/css/elfinder.min.css" rel='stylesheet' />
+    <link href='/public/css/elfinder.theme.css' rel='stylesheet' />
+    <link href='/public/css/uploadify.css' rel='stylesheet' />
+    <link href='/public/css/animate.min.css' rel='stylesheet' />
+    <link href='/public/css/jquery-ui.css' rel='stylesheet' />
+    <link href='/public/css/bootstrap-datetimepicker.min.css' rel="stylesheet" />
+    <link href='/public/css/bootstrapValidator.css' rel="stylesheet" />
+    <link href='/public/css/common.css' rel="stylesheet" />
+    <script src="/public/lib/jquery/jquery.min.js"></script>
+    <script src="/public/js/a_public.js"></script>
+</head>
+
+<body>
+<!--[if lt IE 9]>
+<div style="text-align: center;color: #fff; padding: 50px 0; font-size: 30px; background: rgb(253, 99, 30)">
+    本平台目前只支持 IE9 以上的浏览器，为了更好的体验，建议使用谷歌、火狐、IE9+ 等主流浏览器访问本站！
+</div>
+<![endif]-->
+<div class="navbar navbar-default" role="navigation">
+    <div class="navbar-inner">
+        <a class="navbar-brand">
+            <img src='<%= logo %>' hight="47" class="hidden-xs">
+            <span>集中监控平台</span>
+        </a>
+
+        <div class="btn-group pull-right">
+
+            <a class="btn btn-default"><i class='glyphicon glyphicon-user blue'></i><%=user.name%></a>
+
+            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="/logout">退 出</a></li>
+            </ul>
+        </div>
+
+        <ul class="collapse navbar-collapse nav navbar-nav top-menu pull-right">
+            <li><span style="position: relative;display:block;margin:0;padding: 10px 15px;">所在省份：<span id="show_province"><%=user.province%></span></span></li>
+            <li><a><img src='/public/img/telephone.png'> 400-888-7180 </a></li>
+            <li><div style="background-color:gray; width:1px; height:30px; margin: 10px 2px 0 2px;"></div></li>
+            <li><a>设备概况: </a></li>
+            <li><span class="device device-info"><a href="/index/device?state=10" title="监控设备"><%=deviceProfile.total%></a></span></li>
+            <li><span class="device device-on"><a href="/index/device?state=3" title="在线设备"><%=deviceProfile.on%></a></span></li>
+            <li><span class="device device-warn"><a href="/index/device?state=2" title="告警设备"><%=deviceProfile.warn%></a></span></li>
+            <li><span class="device device-off"><a href="/index/device?state=0" title="离线设备"><%=deviceProfile.off%></a></span></li>
+        </ul>
+    </div>
+</div>
+<div class="ch-container">
+    <div class="row">
+        <!--左侧导航开始-->
+        <div class="col-sm-2 col-lg-2">
+            <div class="sidebar-nav">
+                <div class="nav-canvas">
+                    <ul class="nav nav-pills nav-stacked main-menu">
+                        <li class="accordion">
+                            <a><i class="glyphicon glyphicon-home"></i><span> 首页</span></a>
+                            <ul class="nav nav-pills nav-stacked">
+                                <li><a href="/index/profile"><span>概况</span></a></li>
+                                <li><a href="/index/device"><span>设备列表</span></a></li>
+                                <li><a href="/splitter/splitterDetailsView"><span>分流器详情</span></a></li>
+                            </ul>
+                        </li>
+
+                        <li class="accordion">
+                            <a><i class="glyphicon glyphicon-globe"></i><span> 告警监控</span></a>
+                            <ul class="nav nav-pills nav-stacked">
+                                <li><a href="/alarm/current_alarm"><span>当前告警</span></a></li>
+                                <li><a href="/alarm/history_alarm"><span>历史告警</span></a></li>
+                                <li><a href="/alarm/print_alarm"><span>告警统计</span></a></li>
+                            </ul>
+                        </li>
+
+                        <li class="accordion">
+                            <a><i class="glyphicon glyphicon-user"></i><span> 策略查询</span></a>
+                            <ul class="nav nav-pills nav-stacked">
+                                <li><a href="/policy/query"><span>信安策略查询</span></a></li>
+                                <li><a href="/policy/sync_query"><span>策略同步查询</span></a></li>
+                                <li><a href="/policy/hit_query"><span>策略命中查询</span></a></li>
+                                <li><a href="/policy/hit_history"><span>策略命中历史</span></a></li>
+                                <li><a href="/policy/log"><span>上报日志查询</span></a></li>
+                            </ul>
+                        </li>
+
+                        <li class="accordion">
+                            <a><i class="glyphicon glyphicon-random"></i><span> 设备巡检</span></a>
+                            <ul class="nav nav-pills nav-stacked">
+                                <li><a href="/inspect/device_inspect"><span>设备巡检配置</span></a></li>
+                            </ul>
+                        </li>
+                        <% if(user.type == 1) { %>
+                        <li class="accordion">
+                            <a><i class="glyphicon glyphicon-cog"></i><span> 配置管理</span></a>
+                            <ul class="nav nav-pills nav-stacked">
+                                <li><a href="/manage/account"><span>账号管理</span></a></li>
+                                <li><a href="/manage/room"><span>机房管理</span></a></li>
+                                <li><a href="/manage/device"><span>设备管理</span></a></li>
+                            </ul>
+                        </li>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--左侧导航结束-->
+
+        <!--左侧内容-->
+        <%- body %>
+
+    </div>
+</div>
+
+<script src="/public/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<!-- library for cookie management -->
+<script src='/public/js/jquery.cookie.js'></script>
+<!-- calender plugin -->
+<script src='/public/lib/moment/min/moment.min.js'></script>
+<!-- data table plugin -->
+<script src='/public/js/jquery.dataTables.min.js'></script>
+<!-- select or dropdown enhancer -->
+<script src='/public/lib/chosen/chosen.jquery.min.js'></script>
+<!-- plugin for gallery image view -->
+<script src='/public/lib/colorbox/jquery.colorbox-min.js'></script>
+<!-- notification plugin -->
+<script src='/public/js/jquery.noty.js'></script>
+<!-- library for making tables responsive -->
+<script src='/public/lib/responsive-tables/responsive-tables.js'></script>
+<!-- star rating plugin -->
+<script src='/public/js/jquery.raty.min.js'></script>
+<!-- autogrowing textarea plugin -->
+<script src='/public/js/jquery.autogrow-textarea.js'></script>
+<!-- multiple file upload plugin -->
+<script src='/public/js/jquery.uploadify-3.1.min.js'></script>
+<!-- history.js for cross-browser state change on ajax -->
+<script src='/public/js/jquery.history.js'></script>
+<!-- application script for Charisma demo -->
+<script src='/public/js/charisma.js'></script>
+
+<script src="/public/js/bootstrap-paginator.js"></script>
+<script src="/public/js/jquery-ui.min.js"></script>
+<script src="/public/js/jquery.i18n.properties-1.0.9.js"></script>
+<script src="/public/js/bootstrap-datetimepicker.js"></script>
+<script src="/public/js/bootstrap-datetimepicker.fr.js"></script>
+<script src="/public/js/bootstrapValidator.js"></script>
+
+</body>
+</html>
